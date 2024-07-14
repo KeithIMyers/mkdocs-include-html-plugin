@@ -11,25 +11,33 @@ class IncludeHtmlPlugin(BasePlugin):
 
     def on_post_build(self, config, **kwargs):
         if not self.config['enabled']:
+            print("Plugin is disabled")
             return
 
         site_dir = config['site_dir']
+        print(f"Site directory: {site_dir}")
+
         for root, _, files in os.walk(site_dir):
+            print(f"Checking directory: {root}")
+
             include_html_path = os.path.join(root, '.include.html')
             include_js_path = os.path.join(root, '.include.js')
-            
+
             include_html_content = self.read_file(include_html_path)
             include_js_content = self.read_file(include_js_path)
-            
+
             for file in files:
                 if file.endswith('.html'):
                     html_file_path = os.path.join(root, file)
+                    print(f"Appending content to: {html_file_path}")
                     self.append_include_content(html_file_path, include_html_content, include_js_content)
 
     def read_file(self, file_path):
         if os.path.exists(file_path):
             with open(file_path, 'r', encoding='utf-8') as file:
+                print(f"Reading file: {file_path}")
                 return file.read()
+        print(f"File not found: {file_path}")
         return None
 
     def append_include_content(self, html_file_path, html_content, js_content):
@@ -48,11 +56,3 @@ class IncludeHtmlPlugin(BasePlugin):
 
         with open(html_file_path, 'w', encoding='utf-8') as html_file:
             html_file.write(str(soup))
-
-if __name__ == "__main__":
-    config = {
-        'site_dir': 'site',
-        'docs_dir': 'docs',
-    }
-    plugin = IncludeHtmlPlugin()
-    plugin.on_post_build(config)
