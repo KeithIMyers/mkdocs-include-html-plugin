@@ -33,26 +33,31 @@ class IncludeHtmlPlugin(BasePlugin):
                     self.append_include_content(html_file_path, include_html_content, include_js_content)
 
     def read_file(self, file_path):
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8') as file:
-                print(f"Reading file: {file_path}")
-                return file.read()
-        print(f"File not found: {file_path}")
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    print(f"Reading file: {file_path}")
+                    return file.read()
+            else:
+                print(f"File not found: {file_path}")
+        except Exception as e:
+            print(f"Failed to read file {file_path}: {e}")
         return None
 
     def append_include_content(self, html_file_path, html_content, js_content):
-        with open(html_file_path, 'r', encoding='utf-8') as html_file:
-            soup = BeautifulSoup(html_file, 'html.parser')
-
-        if html_content:
-            include_html_tag = soup.new_tag('div')
-            include_html_tag.append(BeautifulSoup(html_content, 'html.parser'))
-            soup.body.append(include_html_tag)
-
-        if js_content:
-            include_js_tag = soup.new_tag('script')
-            include_js_tag.append(js_content)
-            soup.body.append(include_js_tag)
-
-        with open(html_file_path, 'w', encoding='utf-8') as html_file:
-            html_file.write(str(soup))
+        try:
+            with open(html_file_path, 'r+', encoding='utf-8') as html_file:
+                soup = BeautifulSoup(html_file, 'html.parser')
+                if html_content:
+                    include_html_tag = soup.new_tag('div')
+                    include_html_tag.append(BeautifulSoup(html_content, 'html.parser'))
+                    soup.body.append(include_html_tag)
+                if js_content:
+                    include_js_tag = soup.new_tag('script')
+                    include_js_tag.string = js_content
+                    soup.body.append(include_js_tag)
+                html_file.seek(0)
+                html_file.write(str(soup))
+                html_file.truncate()
+        except Exception as e:
+            print(f"Failed to append content to {html_file_path}: {e}")
