@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mkdocs-include-html-plugin',
-    version='0.1.3',
+    version='0.1.4',
     description='An MkDocs plugin to include HTML and JS content in each directory',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
