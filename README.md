@@ -1,5 +1,7 @@
 # mkdocs-include-html-plugin
 
+**Currently a WIP - Does not yet function as expected**
+
 ## Description
 
 This plugin will look for the presence of any of the following files in a directory and if found, they will be appended to all markdown files in that directory during the mkdocs build process.
